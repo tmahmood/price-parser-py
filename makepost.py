@@ -36,13 +36,12 @@ def get_text(xpath, index):
 rate = 130
 
 if len(sys.argv) < 2:
+    print("missing url to parse")
     sys.exit(1)
-print(sys.argv)
 url = sys.argv[1]
 resp = requests.get(url)
 dom = html.fromstring(resp.content)
 data = {}
-
 data['title'] = get_text("id('productTitle')", 0)
 price = float(get_text('//div[@class="bem-product-price__unit--pdp"]', 0)[1:])
 data['price'] = price * rate
@@ -56,16 +55,21 @@ for feature in features:
 data['features'] = '\n»    '.join(txt).strip()
 data['img'] = get_elm('//a[@class="zoomable-image"]/img', 0).attrib['src']
 data['url'] = url
-data['review_url'] = data['url'] + '/#tabCustReviews'
+data['review_url'] = data['url'] + '#tabCustReviews'
 
 if data['img'].startswith('//'):
     data['img'] = 'http:' + data['img']
 
 download_image(data['img'])
 
+if len(sys.argv) >= 3:
+    data['weight_charge'] = (int(sys.argv[2]) / 1000) * 600
+    data['total_price'] = data['weight_charge'] + data['price']
+else:
+    data['total_price'] = '%s taka BUT NO WEIGHT PROVIDED' % data['price']
+
 with open('post_content', 'w') as fp:
-    tpl = """
-%(title)s
+    tpl = """%(title)s
 
 Description:
 %(description)s
@@ -76,7 +80,7 @@ Review:
 Features:
 »    %(features)s
 
-Price: %(price)d taka + [ ADD WEIGHT IN GRAM ] * 600
+Price: %(total_price)s
 
 Details: %(url)s
 Review: %(review_url)s
