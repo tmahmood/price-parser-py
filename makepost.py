@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 from lxml import html
 import requests
 import shutil
@@ -53,7 +56,10 @@ txt = []
 for feature in features:
     txt.append(feature.text_content())
 data['features'] = '\n»    '.join(txt).strip()
-data['img'] = get_elm('//a[@class="zoomable-image"]/img', 0).attrib['src']
+try:
+    data['img'] = get_elm('//a[@class="zoomable-image"]/img', 0).attrib['src']
+except Exception as e:
+    data['img'] = get_elm('//div[@id="mainImageWrapper"]/img', 0).attrib['src']
 data['url'] = url
 data['review_url'] = data['url'] + '#tabCustReviews'
 
