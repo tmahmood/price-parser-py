@@ -49,7 +49,7 @@ data['title'] = get_text("id('productTitle')", 0)
 price = float(get_text('//div[@class="bem-product-price__unit--pdp"]', 0)[1:])
 data['price'] = price * rate
 rating = get_elm('//div[@class="bem-review-stars__wrapper"]', 0)
-data['rating'] = rating.attrib['title'].strip()
+data['rating'] = rating.attrib['title'].strip().replace('Star review ', '')
 data['description'] = get_text('//div[@itemprop="description"]', 0)
 features = dom.xpath('//div[@class="bem-content"]/dl[1]/dd')
 txt = []
@@ -59,14 +59,20 @@ data['features'] = '\n»    '.join(txt).strip()
 try:
     data['img'] = get_elm('//a[@class="zoomable-image"]/img', 0).attrib['src']
 except Exception as e:
-    data['img'] = get_elm('//div[@id="mainImageWrapper"]/img', 0).attrib['src']
+    img = get_elm('//div[@id="mainImageWrapper"]/img')
+    if len(img) == 0:
+        print("Download image manually")
+        data['img'] = ''
+    else:
+        data['img'] = img.attrib['src']
 data['url'] = url
 data['review_url'] = data['url'] + '#tabCustReviews'
 
 if data['img'].startswith('//'):
     data['img'] = 'http:' + data['img']
 
-download_image(data['img'])
+if data['img'] != '':
+    download_image(data['img'])
 
 if len(sys.argv) >= 3:
     data['weight_charge'] = (int(sys.argv[2]) / 1000) * 600
@@ -77,21 +83,19 @@ else:
 with open('post_content', 'w') as fp:
     tpl = """%(title)s
 
+Details: %(url)s
+Price  : %(total_price)s
+Rating : %(rating)s
+Review : %(review_url)s
+
 Description:
 %(description)s
-
-Review:
-%(rating)s
 
 Features:
 »    %(features)s
 
-Price: %(total_price)s
-
-Details: %(url)s
-Review: %(review_url)s
 
         """
     txt = tpl % data
     fp.write(txt)
-    print (txt)
+    print(txt)
