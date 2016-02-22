@@ -67,13 +67,10 @@ except Exception as e:
         data['img'] = img.attrib['src']
 data['url'] = url
 data['review_url'] = data['url'] + '#tabCustReviews'
-
 if data['img'].startswith('//'):
     data['img'] = 'http:' + data['img']
-
 if data['img'] != '':
     download_image(data['img'])
-
 if len(sys.argv) >= 3:
     data['weight_charge'] = (int(sys.argv[2]) / 1000) * 600
     data['total_price'] = data['weight_charge'] + data['price']
