@@ -33,7 +33,10 @@ class ChainReaction(parser.Parser):
 
         :returns: @todo
         """
-        rating = util.get_elm(self.dom, ChainReaction.XRATING, 0)
+        try:
+            rating = util.get_elm(self.dom, ChainReaction.XRATING, 0)
+        except Exception:
+            return 'N/A'
         return rating.text_content().strip()
 
     def get_description(self):
@@ -41,7 +44,8 @@ class ChainReaction(parser.Parser):
 
         :returns: @todo
         """
-        return util.get_text(self.dom, ChainReaction.XDESC, 0)
+        desc = util.get_text(self.dom, ChainReaction.XDESC, 0)
+        return desc.split('Features:')[0]
 
     def get_features(self):
         """@todo: Docstring for function.
@@ -50,7 +54,24 @@ class ChainReaction(parser.Parser):
         :returns: @todo
 
         """
-        return ''
+        desc = util.get_text(self.dom, ChainReaction.XDESC, 0)
+        try:
+            lines = desc.split('Features:')[1].strip().split('\n')
+        except Exception:
+            return ''
+        newline = []
+        for l in lines:
+            line = l.strip()
+            if line != '':
+                newline.append('» ' + line)
+        return '\n'.join(newline).strip('»  ')
+
+    def get_review_url(self):
+        """gets review url
+        :returns: @todo
+
+        """
+        return self.url + '#bazaarvoice_reviews_tab'
 
     def get_image(self):
         """get image url and download

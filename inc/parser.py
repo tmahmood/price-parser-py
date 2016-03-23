@@ -17,7 +17,6 @@ class Parser(object):
         data = {}
         data['title'] = self.get_title()
         data['price'] = self.get_price(rate)
-        print(data)
         data['rating'] = self.get_rating()
         data['description'] = self.get_description()
         data['features'] = self.get_features()
@@ -25,3 +24,4 @@ class Parser(object):
         data['review_url'] = self.get_review_url()
         data['img'] = self.get_image()
         return data
+

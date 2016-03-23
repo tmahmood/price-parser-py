@@ -6,27 +6,23 @@ import inc.wiggle as wiggle
 import inc.chainreaction as chainreaction
 
 TEMPLATE = """%(title)s
-
---------------------------------------------
-Price
-%(price)s
---
-Est. Weight
-%(weight)s g
---
+============================================
 Price inc. weight charge
 %(total_price)s
---------------------------------------------
+==
+Est. Weight
+%(weight)s g
+============================================
 Rating : %(rating)s
---------------------------------------------
+============================================
 Details: %(url)s
 Review : %(review_url)s
---------------------------------------------
+============================================
 Description:
 %(description)s
---------------------------------------------
+============================================
 Features:
-»    %(features)s
+» %(features)s
         """
 
 
