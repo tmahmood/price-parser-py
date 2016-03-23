@@ -3,7 +3,7 @@
 
 import sys
 
-PER_POUND = 130
+PER_POUND = 135
 CHARGE_PER_KG = 600
 
 if len(sys.argv) < 2:
@@ -12,4 +12,4 @@ if len(sys.argv) < 2:
 price = int(sys.argv[1])
 weight = int(sys.argv[2])
 
-print((138 * price) + ((weight / 1000) * 600))
+print((PER_POUND * price) + ((weight / 1000) * CHARGE_PER_KG))

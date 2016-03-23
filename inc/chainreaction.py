@@ -8,7 +8,7 @@ class ChainReaction(parser.Parser):
     XPRICE = '//span[@class="crcPDPPriceHidden"]'
     XRATING = '//li[@class="crcPDPRatingsReviewsStarsInfo"]'
     XDESC = 'id("crcPDPComponentDescription")'
-    XFEAT = ''
+    XFEAT = 'id("crcPDPComponentDescription")/ul/li'
     XIMG = '//li[@class="crcPDPImage"]//img'
 
     def get_title(self):
@@ -54,6 +54,12 @@ class ChainReaction(parser.Parser):
         :returns: @todo
 
         """
+        feat = util.get_elm(self.dom, ChainReaction.XFEAT)
+        line = []
+        if feat != None:
+            for li in feat:
+                line.append('» ' + li.text_content())
+            return '\n'.join(line).strip('» ')
         desc = util.get_text(self.dom, ChainReaction.XDESC, 0)
         try:
             lines = desc.split('Features:')[1].strip().split('\n')
@@ -64,6 +70,8 @@ class ChainReaction(parser.Parser):
             line = l.strip()
             if line != '':
                 newline.append('» ' + line)
+            else:
+                newline.append('\n')
         return '\n'.join(newline).strip('»  ')
 
     def get_review_url(self):
